@@ -3,7 +3,7 @@
 namespace MultiTenant.App.Controllers
 {
     [ApiController]
-    [Route("{tenant}/[controller]/[action]")]
+    [Route("api/{tenant}/[controller]/[action]")]
     public abstract class MultiTenantController : ControllerBase
     {
     }

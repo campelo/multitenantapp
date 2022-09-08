@@ -1,6 +1,8 @@
 ﻿using MultiTenant.App.Features.Contexts;
 using MultiTenant.App.Features.TenantResolvers;
 using MultiTenant.App.MIddlewares;
+using MultiTenant.Core.Features.Contexts;
+using MultiTenant.Core.Features.TenantResolvers;
 
 namespace MultiTenant.App.Extensions
 {

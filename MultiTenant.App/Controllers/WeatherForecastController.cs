@@ -1,31 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using MultiTenant.Core.Entities;
+using MultiTenant.Core.Services.Interfaces;
 
 namespace MultiTenant.App.Controllers
 {
-    public class WeatherForecastController : MultiTenantController
+    public class LocationController : MultiTenantController
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        private readonly ILocationService _locationService;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public LocationController(ILocationService locationService)
         {
-            _logger = logger;
+            _locationService = locationService;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public Task<IEnumerable<Location>> GetAll()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return _locationService.GetAll();
         }
     }
 }

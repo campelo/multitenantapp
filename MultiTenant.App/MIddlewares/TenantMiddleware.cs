@@ -1,4 +1,5 @@
-﻿using MultiTenant.App.Features.Contexts;
+﻿using MultiTenant.Core.Features.Contexts;
+using MultiTenant.Core.Features.TenantResolvers;
 
 namespace MultiTenant.App.MIddlewares
 {
@@ -11,9 +12,10 @@ namespace MultiTenant.App.MIddlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext)
+        public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext, ITenantResolver tenantResolver)
         {
-            globalContext.SetContext(context);
+            string? tenantId = await tenantResolver.ResolveTenantName(context);
+            globalContext.SetContext(tenantId);
 
             await _next(context);
         }

@@ -1,4 +1,6 @@
 using MultiTenant.App.Extensions;
+using MultiTenant.Core.Extensions;
+using MultiTenant.Repository.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMultiTenant();
+
+builder.Services
+    .AddMultiTenantRepository(builder.Configuration)
+    .AddMultiTenantCore()
+    .AddMultiTenant();
 
 var app = builder.Build();
 
@@ -26,5 +32,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.Services.SeedDbContext();
 
 app.Run();

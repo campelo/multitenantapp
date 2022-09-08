@@ -1,21 +1,14 @@
-﻿using MultiTenant.App.Features.TenantResolvers;
+﻿using MultiTenant.Core.Features.Contexts;
 
 namespace MultiTenant.App.Features.Contexts
 {
     public class GlobalContext : IGlobalContext
     {
-        private readonly ITenantResolver _tenantResolver;
+        public string? TenantId { get; private set; }
 
-        public GlobalContext(ITenantResolver tenantResolver)
+        public void SetContext(string? tenantId)
         {
-            _tenantResolver = tenantResolver;
-        }
-
-        public string? TenantName { get; private set; }
-
-        public void SetContext(HttpContext context)
-        {
-            TenantName = _tenantResolver.ResolveTenantName(context);
+            TenantId = tenantId;
         }
     }
 }
