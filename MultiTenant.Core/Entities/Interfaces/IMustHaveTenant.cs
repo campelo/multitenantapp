@@ -1,7 +1,7 @@
 ﻿namespace MultiTenant.Core.Entities.Interfaces
 {
-    public interface IMustHaveTenant : IMayHaveTenant
+    public interface IMustHaveTenant
     {
-        string TenantId { get; set; }
+        string TenantKey { get; set; }
     }
 }

@@ -14,12 +14,27 @@ namespace MultiTenant.Repository.DbContexts
                 return;
             for (int i = 1; i <= 3; i++)
             {
-                var t = new Tenant() { Id = i.ToString(), Name = $"org{i}", IsDeleted = false };
+                var t = new Tenant($"org{i}", $"Organization {i}");
                 context.Tenants.Add(t);
+                context.SaveChanges();
+                if (i % 2 == 0)
+                {
+                    for (int k = 1; k <= 3; k++)
+                    {
+                        var subt = new Tenant($"sub{i}-{k}", $"Sub-organization {i}-{k}", t);
+                        context.Tenants.Add(subt);
+                        context.SaveChanges();
+                        for (int j = 1; j <= 3; j++)
+                        {
+                            var l = new Location() { TenantKey = subt.GetTenantKey, Address = $"address location {subt.Code}.{j}", Name = $"location {subt.Code}.{j}", IsDeleted = false };
+                            context.Locations.Add(l);
+                        }
+                    }
+                }
 
                 for (int j = 1; j <= 3; j++)
                 {
-                    var l = new Location() { Address = $"address location {i}.{j}", Name = $"location {i}.{j}", TenantId = i.ToString(), IsDeleted = false };
+                    var l = new Location() { TenantKey = t.GetTenantKey, Address = $"address location {i}.{j}", Name = $"location {i}.{j}", IsDeleted = false };
                     context.Locations.Add(l);
                 }
             }

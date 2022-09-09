@@ -14,8 +14,8 @@ namespace MultiTenant.App.MIddlewares
 
         public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext, ITenantResolver tenantResolver)
         {
-            string? tenantId = await tenantResolver.ResolveTenantName(context);
-            globalContext.SetContext(tenantId);
+            string? tenantKey = await tenantResolver.ResolveTenantCode(context);
+            globalContext.SetContext(tenantKey);
 
             await _next(context);
         }

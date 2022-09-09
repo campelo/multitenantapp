@@ -13,19 +13,19 @@ namespace MultiTenant.App.Features.TenantResolvers
             _tenantService = tenantService;
         }
 
-        public async Task<string?> ResolveTenantName(HttpContext httpContext)
+        public async Task<string?> ResolveTenantCode(HttpContext httpContext)
         {
             if (httpContext is null ||
                 !httpContext.Request.RouteValues.Any(x => x.Key.Equals("tenant", StringComparison.OrdinalIgnoreCase)))
                 return null;
-            string? tenantName = httpContext.Request.RouteValues.First(x => x.Key.Equals("tenant", StringComparison.OrdinalIgnoreCase)).Value?.ToString();
+            string? tenantCode = httpContext.Request.RouteValues.First(x => x.Key.Equals("tenant", StringComparison.OrdinalIgnoreCase)).Value?.ToString();
 
-            if (string.IsNullOrWhiteSpace(tenantName))
+            if (string.IsNullOrWhiteSpace(tenantCode))
                 return null;
 
-            Tenant tenant = await _tenantService.GetByName(tenantName);
+            Tenant tenant = await _tenantService.GetByCode(tenantCode);
 
-            return tenant?.Id ?? null;
+            return tenant?.GetTenantKey;
         }
     }
 }

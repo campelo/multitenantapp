@@ -12,13 +12,13 @@ namespace MultiTenant.Repository.Extensions
         {
             foreach (var entry in dbContext.ChangeTracker.Entries().Where(e => e.State == EntityState.Added))
             {
-                var hasTenantId = entry.Entity as IMayHaveTenant;
-                if (hasTenantId is not null && hasTenantId.TenantId is null)
-                    hasTenantId.TenantId = tenantId;
+                var hasTenantId = entry.Entity as IMustHaveTenant;
+                if (hasTenantId is not null && string.IsNullOrWhiteSpace(hasTenantId.TenantKey))
+                    hasTenantId.TenantKey = tenantId;
             }
         }
 
-        public static void AddTenantQueryFilter(this IMutableEntityType entity, IMayHaveTenant tenantData)
+        public static void AddTenantQueryFilter(this IMutableEntityType entity, IMustHaveTenant tenantData)
         {
             var methodToCall = typeof(DbExtensions)
                 .GetMethod(nameof(SetupTenantQueryFilter),
@@ -26,13 +26,15 @@ namespace MultiTenant.Repository.Extensions
                 .MakeGenericMethod(entity.ClrType);
             var filter = methodToCall.Invoke(null, new object[] { tenantData });
             entity.SetQueryFilter((LambdaExpression)filter);
-            entity.AddIndex(entity.FindProperty(nameof(tenantData.TenantId)));
+            entity.GetProperty(nameof(IMustHaveTenant.TenantKey)).SetIsUnicode(false); //Make unicode
+            entity.GetProperty(nameof(IMustHaveTenant.TenantKey)).SetMaxLength(RepositoryContants.TENANT_ID_LENGTH); //bigger for hierarchical multi-tenant
+            entity.AddIndex(entity.FindProperty(nameof(tenantData.TenantKey)));
         }
 
-        private static LambdaExpression SetupTenantQueryFilter<TEntity>(IMayHaveTenant tenantData)
+        private static LambdaExpression SetupTenantQueryFilter<TEntity>(IMustHaveTenant tenantData)
             where TEntity : class, IMustHaveTenant
         {
-            Expression<Func<TEntity, bool>> filter = x => x.TenantId == tenantData.TenantId;
+            Expression<Func<TEntity, bool>> filter = x => x.TenantKey.StartsWith(tenantData.TenantKey);
             return filter;
         }
     }

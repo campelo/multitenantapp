@@ -4,6 +4,6 @@ namespace MultiTenant.Core.Features.TenantResolvers
 {
     public interface ITenantResolver
     {
-        Task<string?> ResolveTenantName(HttpContext context);
+        Task<string?> ResolveTenantCode(HttpContext context);
     }
 }

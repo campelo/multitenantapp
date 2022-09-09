@@ -4,11 +4,11 @@ namespace MultiTenant.App.Features.Contexts
 {
     public class GlobalContext : IGlobalContext
     {
-        public string? TenantId { get; private set; }
+        public string? TenantKey { get; private set; }
 
         public void SetContext(string? tenantId)
         {
-            TenantId = tenantId;
+            TenantKey = tenantId;
         }
     }
 }

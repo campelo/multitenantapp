@@ -19,10 +19,10 @@ namespace MultiTenant.Repository.Repositories
             return await _dbContext.Tenants.ToListAsync();
         }
 
-        public async Task<Tenant?> GetByName(string tenantName)
+        public async Task<Tenant?> GetByCode(string tenantCode)
         {
-            tenantName = tenantName.Trim().ToLower();
-            var result = await _dbContext.Tenants.FirstOrDefaultAsync(x => x.Name == tenantName);
+            tenantCode = tenantCode.Trim().ToLower();
+            var result = await _dbContext.Tenants.FirstOrDefaultAsync(x => x.Code == tenantCode);
             return result;
         }
     }

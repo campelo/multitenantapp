@@ -2,8 +2,8 @@
 {
     public interface IGlobalContext
     {
-        public string? TenantId { get; }
+        public string? TenantKey { get; }
 
-        void SetContext(string? tenantId);
+        void SetContext(string? tenantKey);
     }
 }

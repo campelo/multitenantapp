@@ -13,9 +13,9 @@ namespace MultiTenant.Core.Services
             _tenantRepository = tenantRepository;
         }
 
-        public async Task<Tenant> GetByName(string tenantName)
+        public async Task<Tenant> GetByCode(string tenantCode)
         {
-            return await _tenantRepository.GetByName(tenantName);
+            return await _tenantRepository.GetByCode(tenantCode);
         }
     }
 }

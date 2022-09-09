@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MultiTenant.Core.Entities;
 using MultiTenant.Core.Entities.Interfaces;
+using MultiTenant.Core.Extensions;
 using MultiTenant.Core.Features.Contexts;
 using MultiTenant.Repository.Extensions;
 
 namespace MultiTenant.Repository.DbContexts
 {
-    public class MultiTenantDbContext : DbContext, IMayHaveTenant
+    public class MultiTenantDbContext : DbContext, IMustHaveTenant
     {
         private readonly IGlobalContext _globalContext;
 
-        public string? TenantId { get => _globalContext.TenantId; set { } }
+        public string TenantKey { get => _globalContext.TenantKey; set { } }
 
         public MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options, IGlobalContext globalContext) : base(options)
         {
@@ -30,26 +31,49 @@ namespace MultiTenant.Repository.DbContexts
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.AddTenantIfNeeded(TenantId);
+            this.AddTenantIfNeeded(TenantKey);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            this.AddTenantIfNeeded(TenantId);
+            this.AddTenantIfNeeded(TenantKey);
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //int tenantId = _globalContext.TenantId is null ? 0 : _globalContext.TenantId.Value;
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
                 {
                     entityType.AddTenantQueryFilter(this);
                 }
+                if (typeof(EntityBase<>).IsAssignableToGenericType(entityType.ClrType))
+                {
+                    entityType.AddKey(entityType.GetProperty("Id"));
+                }
             }
+
+            modelBuilder.Entity<Tenant>(entity =>
+            {
+                entity
+                    .HasOne(t => t.ParentTenant)
+                    .WithMany(t => t.Tenants)
+                    .HasForeignKey(t => t.ParentTenantId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity
+                    .Property(p => p.Code)
+                    .IsUnicode(false)
+                    .HasMaxLength(RepositoryContants.TENANT_ID_LENGTH);
+                entity
+                    .HasIndex(p => p.Code);
+                entity
+                    .HasAlternateKey(p => p.Code);
+            });
+
             base.OnModelCreating(modelBuilder);
         }
     }
