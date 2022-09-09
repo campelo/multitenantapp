@@ -6,7 +6,7 @@ using MultiTenant.Repository.Extensions;
 
 namespace MultiTenant.Repository.DbContexts
 {
-    public class MultiTenantDbContext : DbContext, IMustHaveTenant
+    public class MultiTenantDbContext : DbContext, IMayHaveTenant
     {
         private readonly IGlobalContext _globalContext;
 
@@ -24,8 +24,20 @@ namespace MultiTenant.Repository.DbContexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // log SQL queries to console...
-            //optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(Console.WriteLine);
             base.OnConfiguring(optionsBuilder);
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            this.AddTenantIfNeeded(TenantId);
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            this.AddTenantIfNeeded(TenantId);
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

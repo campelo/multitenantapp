@@ -13,6 +13,11 @@ namespace MultiTenant.Core.Services
             _locationRepository = locationRepository;
         }
 
+        public Task<Location> Create(Location location)
+        {
+            return _locationRepository.Create(location);
+        }
+
         public Task<IEnumerable<Location>> GetAll()
         {
             return _locationRepository.GetAll();

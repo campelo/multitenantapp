@@ -2,6 +2,6 @@
 {
     public interface IMayHaveTenant
     {
-        int? TenantId { get; set; }
+        string? TenantId { get; set; }
     }
 }

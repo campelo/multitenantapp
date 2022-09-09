@@ -18,5 +18,11 @@ namespace MultiTenant.App.Controllers
         {
             return _locationService.GetAll();
         }
+
+        [HttpPost]
+        public Task<Location> Create(Location location)
+        {
+            return _locationService.Create(location);
+        }
     }
 }
