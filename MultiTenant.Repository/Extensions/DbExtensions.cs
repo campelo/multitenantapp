@@ -17,15 +17,15 @@ public static class DbExtensions
             Type entryType = entry.Entity.GetType();
             if (typeof(IMustHaveTenant).IsAssignableFrom(entryType))
             {
-                var hasTenantId = entry.Entity as IMustHaveTenant;
-                if (hasTenantId is not null && string.IsNullOrWhiteSpace(hasTenantId.TenantKey))
-                    hasTenantId.TenantKey = tenantKey;
+                var entity = entry.Entity as IMustHaveTenant;
+                if (entity is not null && string.IsNullOrWhiteSpace(entity.TenantKey))
+                    entity.TenantKey = tenantKey;
             }
             else if (typeof(ISharedInTenant).IsAssignableFrom(entryType))
             {
-                var hasTenantId = entry.Entity as ISharedInTenant;
-                if (hasTenantId is not null)
-                    hasTenantId.TenantKey = tenantKey.RetrieveMainTenantKey() ?? hasTenantId.TenantKey.RetrieveMainTenantKey();
+                var entity = entry.Entity as ISharedInTenant;
+                if (entity is not null)
+                    entity.TenantKey = tenantKey.RetrieveMainTenantKey() ?? entity.TenantKey.RetrieveMainTenantKey();
             }
         }
     }

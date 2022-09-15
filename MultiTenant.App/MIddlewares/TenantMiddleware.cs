@@ -1,23 +1,22 @@
-﻿using MultiTenant.Core.Features.Contexts;
-using MultiTenant.Core.Features.TenantResolvers;
+﻿namespace MultiTenant.App.MIddlewares;
 
-namespace MultiTenant.App.MIddlewares
+/// <summary>
+/// This middleware will intercept all the requests to retrieve tenant information.
+/// </summary>
+public class TenantMiddleware
 {
-    public class TenantMiddleware
+    private readonly RequestDelegate _next;
+
+    public TenantMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public TenantMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+    public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext, ITenantResolver tenantResolver)
+    {
+        string? tenantKey = await tenantResolver.ResolveTenantCode(context);
+        globalContext.SetContext(tenantKey);
 
-        public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext, ITenantResolver tenantResolver)
-        {
-            string? tenantKey = await tenantResolver.ResolveTenantCode(context);
-            globalContext.SetContext(tenantKey);
-
-            await _next(context);
-        }
+        await _next(context);
     }
 }

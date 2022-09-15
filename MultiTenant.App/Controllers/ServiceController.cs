@@ -1,6 +1,7 @@
 namespace MultiTenant.App.Controllers;
 
-public class ServiceController : MultiTenantController
+[MultiTenantApiController]
+public class ServiceController
 {
     private readonly IServiceService _serviceService;
 
@@ -16,8 +17,9 @@ public class ServiceController : MultiTenantController
     }
 
     [HttpPost]
-    public Task<Service> Create(Service service)
+    public Task<Service> Create(ServiceDto dto)
     {
+        Service service = new() { Name = dto.Name };
         return _serviceService.Create(service);
     }
 }

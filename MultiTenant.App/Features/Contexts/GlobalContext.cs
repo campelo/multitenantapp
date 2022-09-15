@@ -1,14 +1,14 @@
-﻿using MultiTenant.Core.Features.Contexts;
+﻿namespace MultiTenant.App.Features.Contexts;
 
-namespace MultiTenant.App.Features.Contexts
+/// <inheritdoc />
+public class GlobalContext : IGlobalContext
 {
-    public class GlobalContext : IGlobalContext
-    {
-        public string? TenantKey { get; private set; }
+    /// <inheritdoc />
+    public string? TenantKey { get; private set; }
 
-        public void SetContext(string? tenantId)
-        {
-            TenantKey = tenantId;
-        }
+    /// <inheritdoc />
+    public void SetContext(string? tenantId)
+    {
+        TenantKey = tenantId;
     }
 }

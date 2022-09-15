@@ -1,28 +1,24 @@
-using Microsoft.AspNetCore.Mvc;
-using MultiTenant.Core.Entities;
-using MultiTenant.Core.Services.Interfaces;
+namespace MultiTenant.App.Controllers;
 
-namespace MultiTenant.App.Controllers
+[MultiTenantApiController]
+public class LocationController
 {
-    public class LocationController : MultiTenantController
+    private readonly ILocationService _locationService;
+
+    public LocationController(ILocationService locationService)
     {
-        private readonly ILocationService _locationService;
+        _locationService = locationService;
+    }
 
-        public LocationController(ILocationService locationService)
-        {
-            _locationService = locationService;
-        }
+    [HttpGet]
+    public Task<IEnumerable<Location>> GetAll()
+    {
+        return _locationService.GetAll();
+    }
 
-        [HttpGet]
-        public Task<IEnumerable<Location>> GetAll()
-        {
-            return _locationService.GetAll();
-        }
-
-        [HttpPost]
-        public Task<Location> Create(Location location)
-        {
-            return _locationService.Create(location);
-        }
+    [HttpPost]
+    public Task<Location> Create(Location location)
+    {
+        return _locationService.Create(location);
     }
 }
