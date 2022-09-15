@@ -1,8 +1,16 @@
 ﻿namespace MultiTenant.Repository.Extensions;
 
+/// <summary>
+/// Data base extensions
+/// </summary>
 public static class DbExtensions
 {
-    public static void AddTenantIfNeeded(this DbContext dbContext, string? tenantId)
+    /// <summary>
+    /// Add tenant key before adding new entity
+    /// </summary>
+    /// <param name="dbContext">Data base context</param>
+    /// <param name="tenantKey">Current tenant's key</param>
+    public static void AddTenantIfNeeded(this DbContext dbContext, string? tenantKey)
     {
         foreach (var entry in dbContext.ChangeTracker.Entries().Where(e => e.State == EntityState.Added))
         {
@@ -11,17 +19,22 @@ public static class DbExtensions
             {
                 var hasTenantId = entry.Entity as IMustHaveTenant;
                 if (hasTenantId is not null && string.IsNullOrWhiteSpace(hasTenantId.TenantKey))
-                    hasTenantId.TenantKey = tenantId;
+                    hasTenantId.TenantKey = tenantKey;
             }
             else if (typeof(ISharedInTenant).IsAssignableFrom(entryType))
             {
                 var hasTenantId = entry.Entity as ISharedInTenant;
                 if (hasTenantId is not null)
-                    hasTenantId.TenantKey = tenantId.RetrieveMainTenantKey() ?? hasTenantId.TenantKey.RetrieveMainTenantKey();
+                    hasTenantId.TenantKey = tenantKey.RetrieveMainTenantKey() ?? hasTenantId.TenantKey.RetrieveMainTenantKey();
             }
         }
     }
 
+    /// <summary>
+    /// Filter query results by tenant key
+    /// </summary>
+    /// <param name="entity">Searching entity</param>
+    /// <param name="tenantData">Object containing tenant key</param>
     public static void AddTenantQueryFilter(this IMutableEntityType entity, ITenant tenantData)
     {
         var methodToCall = typeof(DbExtensions)
@@ -42,6 +55,11 @@ public static class DbExtensions
         return filter;
     }
 
+    /// <summary>
+    /// Filter query results for shared items by tenant key
+    /// </summary>
+    /// <param name="entity">Searching entity</param>
+    /// <param name="tenantData">Object containing tenant key</param>
     public static void AddSharedInsideTenantQueryFilter(this IMutableEntityType entity, ITenant tenantData)
     {
         var methodToCall = typeof(DbExtensions)

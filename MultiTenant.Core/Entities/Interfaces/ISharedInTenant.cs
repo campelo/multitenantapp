@@ -5,5 +5,6 @@
 /// </summary>
 public interface ISharedInTenant : ITenant
 {
-    string TenantKey { get; set; }
+    /// <inheritdoc />
+    new string TenantKey { get; set; }
 }

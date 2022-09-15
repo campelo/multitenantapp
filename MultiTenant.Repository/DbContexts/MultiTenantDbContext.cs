@@ -1,11 +1,20 @@
 ﻿namespace MultiTenant.Repository.DbContexts;
 
+/// <summary>
+/// Multi-tenant DB context
+/// </summary>
 public class MultiTenantDbContext : DbContext, ITenant
 {
     private readonly IGlobalContext _globalContext;
 
-    public string TenantKey { get => _globalContext.TenantKey; set { } }
+    /// <inheritdoc />
+    public string? TenantKey { get => _globalContext.TenantKey; set { } }
 
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    /// <param name="options">Db context options</param>
+    /// <param name="globalContext"><see cref="IGlobalContext"/> to handle tenant's data </param>
     public MultiTenantDbContext(DbContextOptions<MultiTenantDbContext> options, IGlobalContext globalContext) : base(options)
     {
         _globalContext = globalContext;
