@@ -1,9 +1,8 @@
-﻿namespace MultiTenant.Core.Entities
+﻿namespace MultiTenant.Core.Entities;
+
+public abstract class EntityBase<TId> : ISoftDelete
 {
-    public abstract class EntityBase<TId>
-    {
-        public TId Id { get; set; }
-        public string Name { get; set; }
-        public bool IsDeleted { get; set; } = false;
-    }
+    public TId Id { get; set; }
+    public string Name { get; set; }
+    public bool IsDeleted { get; set; } = false;
 }

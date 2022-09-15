@@ -1,10 +1,7 @@
-﻿using MultiTenant.Core.Entities;
+﻿namespace MultiTenant.Core.Repositories.Interfaces;
 
-namespace MultiTenant.Core.Repositories.Interfaces
+public interface ITenantRepository
 {
-    public interface ITenantRepository
-    {
-        Task<IEnumerable<Tenant>> GetAll();
-        Task<Tenant?> GetByCode(string tenantCode);
-    }
+    Task<IEnumerable<Tenant>> GetAll();
+    Task<Tenant?> GetByCode(string tenantCode);
 }

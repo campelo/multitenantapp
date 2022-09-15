@@ -1,10 +1,7 @@
-﻿using MultiTenant.Core.Entities;
+﻿namespace MultiTenant.Core.Services.Interfaces;
 
-namespace MultiTenant.Core.Services.Interfaces
+public interface ILocationService
 {
-    public interface ILocationService
-    {
-        Task<IEnumerable<Location>> GetAll();
-        Task<Location> Create(Location location);
-    }
+    Task<IEnumerable<Location>> GetAll();
+    Task<Location> Create(Location location);
 }

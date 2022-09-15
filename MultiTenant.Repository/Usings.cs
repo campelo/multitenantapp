@@ -1,0 +1,14 @@
+﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using MultiTenant.Core.Entities;
+global using MultiTenant.Core.Entities.Interfaces;
+global using MultiTenant.Core.Extensions;
+global using MultiTenant.Core.Features.Contexts;
+global using MultiTenant.Core.Repositories.Interfaces;
+global using MultiTenant.Repository.DbContexts;
+global using MultiTenant.Repository.Extensions;
+global using MultiTenant.Repository.Repositories;
+global using System.Linq.Expressions;
+global using System.Reflection;

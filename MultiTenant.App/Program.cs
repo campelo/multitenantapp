@@ -1,7 +1,3 @@
-using MultiTenant.App.Extensions;
-using MultiTenant.Core.Extensions;
-using MultiTenant.Repository.Extensions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

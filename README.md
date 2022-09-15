@@ -1,14 +1,23 @@
 # Multitenant App
 This is an example of a multitenant app. **Some part of the code requires changes before using in a production environment.**
 
-# Briefing
-You're developping an solution to keep the same application available for multiple clients. Each client should have only access to his corporation and subgroups in there. Checking this image below, we can see that **Organization 1** should have only access to three locations *1.1, 1.2 and 1.3*. 
+## Restricting items by tenant
+You're developping an solution to keep the same application available for multiple clients. Each client should have only access to his corporation and subgroups in there. 
+The only thing you have to do is use this interface **IMustHaveTenant** on your entities to have this behaviour.
+
+Checking this image below, we can see that **Organization 1** should have only access to three locations *1.1, 1.2 and 1.3*. 
 
 ![Image 2](./assets/img2.png)
 
 But, members of **Organization 2** should have access to nine locations: three locations of **Organization 2** and all locations of **sub-organization 2.1** and **sub-organization 2.2**.
 
 ![Image 3](./assets/img3.png)
+
+## Sharing items inside a tenant.
+Maybe your tenant has some entities that should be shared with all children tenants. For that, you have to use **ISharedInTenant** interface on your entites. 
+Then, you can see that a service available in a *Organization* will be seen for all *sub-organizations*.
+
+![Image 4](./assets/img4.png)
 
 # Running the application
 
@@ -89,6 +98,6 @@ Response:
 
 # Migration
 You can modify the code and add a new migration using a command like that in VS
-```powershell```
+```powershell
 Add-Migration [MigrationName] -Project MultiTenant.Repository -StartUpProject MultiTenant.App
 ```

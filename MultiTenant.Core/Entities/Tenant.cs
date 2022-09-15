@@ -2,6 +2,8 @@
 {
     public class Tenant : EntityBase<int>
     {
+        public static readonly string TENANT_KEY_SPLITTER = ".";
+
         public Tenant()
         {
         }
@@ -20,7 +22,7 @@
         public string Code { get; private set; }
 
         public int? ParentTenantId { get; private set; }
-        
+
         /// <summary>
         /// Hierarchical tenants
         /// </summary>
@@ -32,7 +34,7 @@
         public string? ParentTenantKey { get; private set; }
 
         public string GetTenantKey =>
-            ParentTenantKey + $"{Id}.";
+            ParentTenantKey + $"{Id}{TENANT_KEY_SPLITTER}";
 
         public virtual IEnumerable<Tenant> Tenants { get; set; }
     }

@@ -1,9 +1,6 @@
-﻿using MultiTenant.Core.Entities;
+﻿namespace MultiTenant.Core.Services.Interfaces;
 
-namespace MultiTenant.Core.Services.Interfaces
+public interface ITenantService
 {
-    public interface ITenantService
-    {
-        Task<Tenant> GetByCode(string tenantCode);
-    }
+    Task<Tenant> GetByCode(string tenantCode);
 }
