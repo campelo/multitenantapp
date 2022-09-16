@@ -70,37 +70,37 @@ public class MultiTenantDbContext : DbContext, ITenant
             }
         }
 
-        modelBuilder.Entity<Tenant>(entity =>
-        {
-            entity
-                .ToTable("Tenants")
-                .HasOne(t => t.ParentTenant)
-                .WithMany(t => t.Tenants)
-                .HasForeignKey(t => t.ParentTenantId)
-                .OnDelete(DeleteBehavior.Restrict);
-            entity
-                .Property(p => p.Code)
-                .IsUnicode(false)
-                .HasMaxLength(RepositoryContants.HIERACHYCAL_TENANT_ID_LENGTH);
-            entity
-                .HasIndex(p => p.Code);
-            entity
-                .HasAlternateKey(p => p.Code);
-        });
-
-        modelBuilder.Entity<TenantSetting>(entity =>
-        {
-            entity
-                .ToTable("TenantSettings")
-                .HasOne(t => t.Tenant)
-                .WithMany(t => t.Settings)
-                .HasForeignKey(t => t.TenantId)
-                .OnDelete(DeleteBehavior.Restrict);
-            entity
-                .HasIndex(p => p.Key);
-            entity
-                .HasKey(p => new { p.TenantId, p.Key });
-        });
+        modelBuilder
+            .Entity<Tenant>(entity =>
+            {
+                entity
+                    .ToTable("Tenants")
+                    .HasOne(t => t.ParentTenant)
+                    .WithMany(t => t.Tenants)
+                    .HasForeignKey(t => t.ParentTenantId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .Property(p => p.Code)
+                    .IsUnicode(false)
+                    .HasMaxLength(RepositoryContants.HIERACHYCAL_TENANT_ID_LENGTH);
+                entity
+                    .HasIndex(p => p.Code);
+                entity
+                    .HasAlternateKey(p => p.Code);
+            })
+            .Entity<TenantSetting>(entity =>
+            {
+                entity
+                    .ToTable("TenantSettings")
+                    .HasOne(t => t.Tenant)
+                    .WithMany(t => t.Settings)
+                    .HasForeignKey(t => t.TenantId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasIndex(p => p.Key);
+                entity
+                    .HasKey(p => new { p.TenantId, p.Key });
+            });
 
         base.OnModelCreating(modelBuilder);
     }

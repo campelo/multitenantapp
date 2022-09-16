@@ -2,5 +2,5 @@
 
 public interface ITenantService
 {
-    Task<Tenant> GetByCode(string tenantCode);
+    Task<Tenant?> GetByCode(string tenantCode);
 }
