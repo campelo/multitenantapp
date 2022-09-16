@@ -16,6 +16,8 @@ public class TenantRepository : ITenantRepository
 
     public async Task<Tenant?> GetByCode(string tenantCode)
     {
+        if (string.IsNullOrWhiteSpace(tenantCode))
+            throw new ArgumentNullException(nameof(tenantCode));
         tenantCode = tenantCode.Trim().ToLower();
         var result = await _dbContext
             .Tenants
