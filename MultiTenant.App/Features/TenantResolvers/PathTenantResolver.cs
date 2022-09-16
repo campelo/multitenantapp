@@ -16,7 +16,7 @@ public class PathTenantResolver : ITenantResolver
     }
 
     /// <inheritdoc/>
-    public async Task<string?> ResolveTenantCode(HttpContext httpContext)
+    public async Task<Tenant?> ResolveTenantCode(HttpContext httpContext)
     {
         if (httpContext is null ||
             !httpContext.Request.RouteValues.Any(x => x.Key.Equals(AppConstantsSingleton.Instance.TenantIdentifier, StringComparison.OrdinalIgnoreCase)))
@@ -28,6 +28,6 @@ public class PathTenantResolver : ITenantResolver
 
         Tenant tenant = await _tenantService.GetByCode(tenantCode);
 
-        return tenant?.GetTenantKey;
+        return tenant;
     }
 }

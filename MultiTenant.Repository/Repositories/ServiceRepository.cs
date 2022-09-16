@@ -9,11 +9,11 @@ public class ServiceRepository : IServiceRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Service> Create(Service service)
+    public async Task<Service> Create(Service entity)
     {
-        await _dbContext.Services.AddAsync(service);
+        await _dbContext.Services.AddAsync(entity);
         _dbContext.SaveChanges();
-        return service;
+        return entity;
     }
 
     public async Task<IEnumerable<Service>> GetAll()

@@ -1,7 +1,7 @@
 ﻿namespace MultiTenant.Core.Entities.Interfaces;
 
 /// <summary>
-/// An entity implementing this interface could only be seen by its own tenant and its parents...
+/// An entity implementing this interface could only be seen by its own tenant...
 /// </summary>
 public interface IMustHaveTenant : ITenant
 {

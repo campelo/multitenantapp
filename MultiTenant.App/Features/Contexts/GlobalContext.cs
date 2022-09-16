@@ -3,12 +3,14 @@
 /// <inheritdoc />
 public class GlobalContext : IGlobalContext
 {
-    /// <inheritdoc />
-    public string? TenantKey { get; private set; }
+    private Tenant? _currentTenant;
 
     /// <inheritdoc />
-    public void SetContext(string? tenantId)
+    public string? TenantKey => _currentTenant?.GetTenantKey;
+
+    /// <inheritdoc />
+    public void SetCurrentTenant(Tenant? currentTenant)
     {
-        TenantKey = tenantId;
+        _currentTenant = currentTenant;
     }
 }

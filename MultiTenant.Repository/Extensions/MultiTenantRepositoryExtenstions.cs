@@ -7,7 +7,8 @@ public static class MultiTenantRepositoryExtenstions
         return services
             .AddDbContext<MultiTenantDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("Default")))
-            .AddTransient<ITenantRepository, TenantRepository>()
+            .AddScoped<ITenantRepository, TenantRepository>()
+            .AddScoped<ITenantSettingRepository, TenantSettingRepository>()
             .AddScoped<ILocationRepository, LocationRepository>()
             .AddScoped<IServiceRepository, ServiceRepository>();
     }

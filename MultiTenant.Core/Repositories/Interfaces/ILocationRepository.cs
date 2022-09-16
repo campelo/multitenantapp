@@ -3,5 +3,5 @@
 public interface ILocationRepository
 {
     Task<IEnumerable<Location>> GetAll();
-    Task<Location> Create(Location location);
+    Task<Location> Create(Location entity);
 }

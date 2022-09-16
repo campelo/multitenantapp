@@ -11,8 +11,8 @@ public interface IGlobalContext
     public string? TenantKey { get; }
 
     /// <summary>
-    /// Set global context values
+    /// Set global context tenant
     /// </summary>
-    /// <param name="tenantKey">Tenant's key</param>
-    void SetContext(string? tenantKey);
+    /// <param name="currentTenant">Current tenant's data</param>
+    void SetCurrentTenant(Tenant? currentTenant);
 }

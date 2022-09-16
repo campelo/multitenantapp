@@ -12,11 +12,23 @@ public class TenantMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, IGlobalContext globalContext, ITenantResolver tenantResolver)
+    public async Task InvokeAsync(HttpContext context,
+        IGlobalContext globalContext,
+        ITenantResolver tenantResolver,
+        ITenantSettingService tenantSettingService)
     {
-        string? tenantKey = await tenantResolver.ResolveTenantCode(context);
-        globalContext.SetContext(tenantKey);
+        Tenant? currentTenant = await tenantResolver.ResolveTenantCode(context);
+        await UseTenantInContext(globalContext, tenantSettingService, currentTenant);
 
         await _next(context);
+    }
+
+    private static async Task UseTenantInContext(IGlobalContext globalContext, ITenantSettingService tenantSettingService, Tenant? currentTenant)
+    {
+        if (currentTenant == null)
+            return;
+        globalContext.SetCurrentTenant(currentTenant);
+        currentTenant.Settings = await tenantSettingService.GetAll();
+        globalContext.SetCurrentTenant(currentTenant);
     }
 }

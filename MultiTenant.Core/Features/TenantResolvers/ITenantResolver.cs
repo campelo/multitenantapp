@@ -9,6 +9,6 @@ public interface ITenantResolver
     /// Implement this method to customize how you retrieve your tenant's code.
     /// </summary>
     /// <param name="context">Http context used to retrieve tenant's code</param>
-    /// <returns>Tenant's code</returns>
-    Task<string?> ResolveTenantCode(HttpContext context);
+    /// <returns>Tenant's data</returns>
+    Task<Tenant?> ResolveTenantCode(HttpContext context);
 }

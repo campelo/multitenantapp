@@ -9,9 +9,9 @@ public class ServiceService : IServiceService
         _serviceRepository = serviceRepository;
     }
 
-    public Task<Service> Create(Service service)
+    public Task<Service> Create(Service entity)
     {
-        return _serviceRepository.Create(service);
+        return _serviceRepository.Create(entity);
     }
 
     public Task<IEnumerable<Service>> GetAll()

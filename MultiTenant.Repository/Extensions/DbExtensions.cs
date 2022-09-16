@@ -15,9 +15,9 @@ public static class DbExtensions
         foreach (var entry in dbContext.ChangeTracker.Entries().Where(e => e.State == EntityState.Added))
         {
             Type entryType = entry.Entity.GetType();
-            if (typeof(IMustHaveTenant).IsAssignableFrom(entryType))
+            if (typeof(IHaveHierarchicalTenant).IsAssignableFrom(entryType))
             {
-                var entity = entry.Entity as IMustHaveTenant;
+                var entity = entry.Entity as IHaveHierarchicalTenant;
                 if (entity is not null && string.IsNullOrWhiteSpace(entity.TenantKey))
                     entity.TenantKey = tenantKey;
             }
@@ -26,6 +26,12 @@ public static class DbExtensions
                 var entity = entry.Entity as ISharedInTenant;
                 if (entity is not null)
                     entity.TenantKey = tenantKey.RetrieveMainTenantKey() ?? entity.TenantKey.RetrieveMainTenantKey();
+            }
+            else if (typeof(IMustHaveTenant).IsAssignableFrom(entryType))
+            {
+                var entity = entry.Entity as IMustHaveTenant;
+                if (!(entity == null || string.IsNullOrWhiteSpace(tenantKey)))
+                    entity.TenantKey = tenantKey;
             }
         }
     }
@@ -50,6 +56,32 @@ public static class DbExtensions
 
     private static LambdaExpression SetupTenantQueryFilter<TEntity>(ITenant tenantData)
         where TEntity : class, IMustHaveTenant
+    {
+        Expression<Func<TEntity, bool>> filter = x => x.TenantKey.Equals(tenantData.TenantKey);
+        return filter;
+    }
+
+
+    /// <summary>
+    /// Filter query results by hierarchy from a tenant key
+    /// </summary>
+    /// <param name="entity">Searching entity</param>
+    /// <param name="tenantData">Object containing tenant key</param>
+    public static void AddHierarchicalTenantQueryFilter(this IMutableEntityType entity, ITenant tenantData)
+    {
+        var methodToCall = typeof(DbExtensions)
+            .GetMethod(nameof(SetupHierarchicalTenantQueryFilter),
+                BindingFlags.NonPublic | BindingFlags.Static)
+            .MakeGenericMethod(entity.ClrType);
+        var filter = methodToCall.Invoke(null, new object[] { tenantData });
+        entity.SetQueryFilter((LambdaExpression)filter);
+        entity.GetProperty(nameof(ITenant.TenantKey)).SetIsUnicode(false); //Make unicode
+        entity.GetProperty(nameof(ITenant.TenantKey)).SetMaxLength(RepositoryContants.HIERACHYCAL_TENANT_ID_LENGTH); //bigger for hierarchical multi-tenant
+        entity.AddIndex(entity.FindProperty(nameof(tenantData.TenantKey)));
+    }
+
+    private static LambdaExpression SetupHierarchicalTenantQueryFilter<TEntity>(ITenant tenantData)
+        where TEntity : class, IHaveHierarchicalTenant
     {
         Expression<Func<TEntity, bool>> filter = x => x.TenantKey.StartsWith(tenantData.TenantKey);
         return filter;

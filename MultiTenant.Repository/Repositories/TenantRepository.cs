@@ -17,7 +17,10 @@ public class TenantRepository : ITenantRepository
     public async Task<Tenant?> GetByCode(string tenantCode)
     {
         tenantCode = tenantCode.Trim().ToLower();
-        var result = await _dbContext.Tenants.FirstOrDefaultAsync(x => x.Code == tenantCode);
+        var result = await _dbContext
+            .Tenants
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Code == tenantCode);
         return result;
     }
 }

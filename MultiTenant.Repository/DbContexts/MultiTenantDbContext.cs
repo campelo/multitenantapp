@@ -26,6 +26,8 @@ public class MultiTenantDbContext : DbContext, ITenant
 
     public virtual DbSet<Tenant> Tenants { get; set; }
 
+    public virtual DbSet<TenantSetting> TenantSettings { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // log SQL queries to console...
@@ -54,6 +56,10 @@ public class MultiTenantDbContext : DbContext, ITenant
             {
                 entityType.AddTenantQueryFilter(this);
             }
+            if (typeof(IHaveHierarchicalTenant).IsAssignableFrom(entityType.ClrType))
+            {
+                entityType.AddHierarchicalTenantQueryFilter(this);
+            }
             if (typeof(ISharedInTenant).IsAssignableFrom(entityType.ClrType))
             {
                 entityType.AddSharedInsideTenantQueryFilter(this);
@@ -67,11 +73,11 @@ public class MultiTenantDbContext : DbContext, ITenant
         modelBuilder.Entity<Tenant>(entity =>
         {
             entity
+                .ToTable("Tenants")
                 .HasOne(t => t.ParentTenant)
                 .WithMany(t => t.Tenants)
                 .HasForeignKey(t => t.ParentTenantId)
                 .OnDelete(DeleteBehavior.Restrict);
-
             entity
                 .Property(p => p.Code)
                 .IsUnicode(false)
@@ -80,6 +86,20 @@ public class MultiTenantDbContext : DbContext, ITenant
                 .HasIndex(p => p.Code);
             entity
                 .HasAlternateKey(p => p.Code);
+        });
+
+        modelBuilder.Entity<TenantSetting>(entity =>
+        {
+            entity
+                .ToTable("TenantSettings")
+                .HasOne(t => t.Tenant)
+                .WithMany(t => t.Settings)
+                .HasForeignKey(t => t.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity
+                .HasIndex(p => p.Key);
+            entity
+                .HasKey(p => new { p.TenantId, p.Key });
         });
 
         base.OnModelCreating(modelBuilder);

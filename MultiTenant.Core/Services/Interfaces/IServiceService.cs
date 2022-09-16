@@ -3,5 +3,5 @@
 public interface IServiceService
 {
     Task<IEnumerable<Service>> GetAll();
-    Task<Service> Create(Service service);
+    Task<Service> Create(Service entity);
 }

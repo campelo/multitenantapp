@@ -6,6 +6,7 @@ public static class SeedDbContext
     {
         using var scope = service.CreateScope();
         using MultiTenantDbContext context = scope.ServiceProvider.GetRequiredService<MultiTenantDbContext>();
+        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         if (context.Tenants.Any())
             return;
@@ -32,9 +33,11 @@ public static class SeedDbContext
 
             for (int j = 1; j <= 3; j++)
             {
-                var l = new Location() { TenantKey = t.GetTenantKey, Address = $"address location {i}.{j}", Name = $"location {i}.{j}", IsDeleted = false };
+                var setting = new TenantSetting() { TenantKey = t.GetTenantKey, Value = $"Setting value {i}.{j}", Key = $"Setting Name {i}.{j}", Tenant = t };
+                context.TenantSettings.Add(setting);
+                var l = new Location() { TenantKey = t.GetTenantKey, Address = $"address location {i}.{j}", Name = $"location {i}.{j}" };
                 context.Locations.Add(l);
-                var s = new Service() { TenantKey = t.GetTenantKey, Name = $"Service {i}.{j}", IsDeleted = false };
+                var s = new Service() { TenantKey = t.GetTenantKey, Name = $"Service {i}.{j}" };
                 context.Services.Add(s);
             }
         }

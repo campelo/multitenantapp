@@ -62,5 +62,10 @@
         /// Children tenants.
         /// </summary>
         public virtual IEnumerable<Tenant> Tenants { get; set; }
+
+        /// <summary>
+        /// Tenant settings.
+        /// </summary>
+        public virtual IEnumerable<TenantSetting> Settings { get; set; }
     }
 }

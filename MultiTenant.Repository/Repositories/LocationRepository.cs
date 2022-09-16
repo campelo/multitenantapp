@@ -9,11 +9,11 @@ public class LocationRepository : ILocationRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Location> Create(Location location)
+    public async Task<Location> Create(Location entity)
     {
-        await _dbContext.Locations.AddAsync(location);
+        await _dbContext.Locations.AddAsync(entity);
         _dbContext.SaveChanges();
-        return location;
+        return entity;
     }
 
     public async Task<IEnumerable<Location>> GetAll()
