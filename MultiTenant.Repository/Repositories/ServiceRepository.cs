@@ -12,8 +12,15 @@ public class ServiceRepository : IServiceRepository
     public async Task<Service> Create(Service entity)
     {
         await _dbContext.Services.AddAsync(entity);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return entity;
+    }
+
+    public async Task Delete(int id)
+    {
+        Service? entity = await _dbContext.Services.FirstOrDefaultAsync(x => x.Id == id);
+        _dbContext.Services.Remove(entity);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Service>> GetAll()

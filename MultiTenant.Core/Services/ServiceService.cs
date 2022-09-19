@@ -14,6 +14,11 @@ public class ServiceService : IServiceService
         return _serviceRepository.Create(entity);
     }
 
+    public Task Delete(int id)
+    {
+        return _serviceRepository.Delete(id);
+    }
+
     public Task<IEnumerable<Service>> GetAll()
     {
         return _serviceRepository.GetAll();

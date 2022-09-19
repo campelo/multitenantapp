@@ -25,7 +25,7 @@ public static class SeedDbContext
                     context.SaveChanges();
                     for (int j = 1; j <= 3; j++)
                     {
-                        var l = new Location() { TenantKey = subt.GetTenantKey, Address = $"address location {subt.Code}.{j}", Name = $"location {subt.Code}.{j}", IsDeleted = false };
+                        var l = new Location() { TenantKey = subt.GetTenantKey, Address = $"address location {subt.Code}.{j}", Name = $"location {subt.Code}.{j}" };
                         context.Locations.Add(l);
                     }
                 }

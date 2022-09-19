@@ -3,7 +3,7 @@ This is an example of a multitenant app. **Some part of the code requires change
 
 ## Restricting items by tenant
 You're developping an solution to keep the same application available for multiple clients. Each client should have only access to his corporation and subgroups in there. 
-The only thing you have to do is use this interface **IHaveHierarchicalTenant** on your entities to have this behaviour.
+The only thing you have to do is use this interface **IHasHierarchicalTenant** on your entities to have this behaviour.
 
 Checking this image below, we can see that **Organization 1** should have only access to three locations *1.1, 1.2 and 1.3*. 
 

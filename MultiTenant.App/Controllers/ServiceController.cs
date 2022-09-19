@@ -22,4 +22,10 @@ public class ServiceController
         Service service = new() { Name = dto.Name };
         return _serviceService.Create(service);
     }
+
+    [HttpDelete]
+    public Task Delete(int id)
+    {
+        return _serviceService.Delete(id);
+    }
 }

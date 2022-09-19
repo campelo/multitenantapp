@@ -37,37 +37,46 @@ public class MultiTenantDbContext : DbContext, ITenant
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        this.AddTenantIfNeeded(TenantKey);
+        this.ApplyMultitenantRules(TenantKey);
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        this.AddTenantIfNeeded(TenantKey);
+        this.ApplyMultitenantRules(TenantKey);
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
+            List<Type> filterTypes = new();
             if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
             {
-                entityType.AddTenantQueryFilter(this);
+                filterTypes.Add(typeof(IMustHaveTenant));
+                entityType.ApplyTenantRules();
             }
-            if (typeof(IHaveHierarchicalTenant).IsAssignableFrom(entityType.ClrType))
+            if (typeof(IHasHierarchicalTenant).IsAssignableFrom(entityType.ClrType))
             {
-                entityType.AddHierarchicalTenantQueryFilter(this);
+                filterTypes.Add(typeof(IHasHierarchicalTenant));
+                entityType.ApplyHierarchicalTenantRules();
             }
             if (typeof(ISharedInTenant).IsAssignableFrom(entityType.ClrType))
             {
-                entityType.AddSharedInsideTenantQueryFilter(this);
+                filterTypes.Add(typeof(ISharedInTenant));
+                entityType.ApplySharedInsideTenantRules();
+            }
+            if (typeof(IHasOptionsHandler).IsAssignableFrom(entityType.ClrType))
+            {
+                filterTypes.Add(typeof(IHasOptionsHandler));
+                entityType.ApplyOptionsHandlerRules();
             }
             if (typeof(EntityBase<>).IsAssignableToGenericType(entityType.ClrType))
             {
                 entityType.AddKey(entityType.GetProperty("Id"));
             }
+            entityType.ApplyQueryFilter(this, filterTypes);
         }
 
         modelBuilder
