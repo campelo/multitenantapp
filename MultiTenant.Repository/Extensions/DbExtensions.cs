@@ -10,7 +10,7 @@ public static class DbExtensions
     /// </summary>
     /// <param name="dbContext">Data base context</param>
     /// <param name="tenantKey">Current tenant's key</param>
-    public static void ApplyMultitenantRules(this DbContext dbContext, string? tenantKey)
+    public static void ApplyMultitenantSavingRules(this DbContext dbContext, string? tenantKey)
     {
         dbContext.ApplyRulesForAddedItems(tenantKey);
         dbContext.ApplyRulesForDeletedItems();

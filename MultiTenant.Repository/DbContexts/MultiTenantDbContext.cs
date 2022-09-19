@@ -37,13 +37,13 @@ public class MultiTenantDbContext : DbContext, ITenant
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        this.ApplyMultitenantRules(TenantKey);
+        this.ApplyMultitenantSavingRules(TenantKey);
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        this.ApplyMultitenantRules(TenantKey);
+        this.ApplyMultitenantSavingRules(TenantKey);
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
@@ -57,12 +57,12 @@ public class MultiTenantDbContext : DbContext, ITenant
                 filterTypes.Add(typeof(IMustHaveTenant));
                 entityType.ApplyTenantRules();
             }
-            if (typeof(IHasHierarchicalTenant).IsAssignableFrom(entityType.ClrType))
+            else if (typeof(IHasHierarchicalTenant).IsAssignableFrom(entityType.ClrType))
             {
                 filterTypes.Add(typeof(IHasHierarchicalTenant));
                 entityType.ApplyHierarchicalTenantRules();
             }
-            if (typeof(ISharedInTenant).IsAssignableFrom(entityType.ClrType))
+            else if (typeof(ISharedInTenant).IsAssignableFrom(entityType.ClrType))
             {
                 filterTypes.Add(typeof(ISharedInTenant));
                 entityType.ApplySharedInsideTenantRules();

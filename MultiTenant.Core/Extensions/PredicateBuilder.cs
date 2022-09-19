@@ -1,4 +1,4 @@
-﻿namespace MultiTenant.Repository.Extensions;
+﻿namespace MultiTenant.Core.Extensions;
 
 /// <summary>    
 /// Enables the efficient, dynamic composition of query predicates.    

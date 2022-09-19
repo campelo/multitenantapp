@@ -6,3 +6,4 @@ global using MultiTenant.Core.Enums;
 global using MultiTenant.Core.Repositories.Interfaces;
 global using MultiTenant.Core.Services;
 global using MultiTenant.Core.Services.Interfaces;
+global using System.Linq.Expressions;
