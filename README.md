@@ -99,5 +99,5 @@ Response:
 # Migration
 You can modify the code and add a new migration using a command like that in VS
 ```powershell
-Add-Migration [MigrationName] -Project MultiTenant.Repository -StartUpProject MultiTenant.App
+Add-Migration [MigrationName] -Project MultiTenant.Repository -StartUpProject MultiTenant.App -Context MultiTenantDbContext
 ```
